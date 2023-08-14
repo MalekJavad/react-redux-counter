@@ -8,50 +8,28 @@ import CounterOutput from "../components/CounterOutput/CounterOutput.js";
 import "./Counter.css";
 
 class Counter extends React.Component {
-    counterChangeHandler(op) {
-        switch(op) {
-            case 'inc':
-                this.setState({
-                    counter: this.props.ctr + 1
-                });
-                break;
-            case 'dec':
-                this.setState({
-                    counter:  this.props.ctr - 1
-                });
-                break;
-            case 'add':
-                this.setState({
-                    counter:  this.props.ctr + 2
-                });
-                break;
-            case 'min':
-                this.setState({
-                    counter:  this.props.ctr - 2
-                });
-                break;
-            default:
-                this.setState({
-                    counter:  this.props.ctr
-                });
-                break;
-        }
-    }
-
     render() {
         return (
             <div>
                 <CounterOutput value={this.props.ctr} />
+                <div className="controls">
+                    <br/>
+                    <CounterControl label="َIncrement" click={this.props.onIncrement} />
+                    <br/>
+                    <CounterControl label="َDecrement" click={this.props.onDecrement}  />
+                    <br/>
+                    <CounterControl label="َAdd" click={this.props.onAdd}  />
+                    <br/>
+                    <CounterControl label="Min" click={this.props.onMin}  />
+                    <br/>
+                </div>
                 <div>
-                    <br/>
-                    <CounterControl label="َIncrement" click={() => this.counterChangeHandler('inc')} />
-                    <br/>
-                    <CounterControl label="َDecrement" click={() => this.counterChangeHandler('dec')}  />
-                    <br/>
-                    <CounterControl label="َAdd" click={() => this.counterChangeHandler('add')}  />
-                    <br/>
-                    <CounterControl label="Min" click={() => this.counterChangeHandler('min')}  />
-                    <br/>
+                    <button onClick={() => this.props.showResult(this.props.ctr)}>Show Store</button>
+                    {this.props.scr.map((item) => {
+                        return (
+                            <p key={item}>{item}</p>
+                        )
+                    })}
                 </div>
             </div>
         )
@@ -61,7 +39,18 @@ class Counter extends React.Component {
 const mapStateToProps = (state) => {
     return {
         ctr: state.counter,
+        scr: state.scores,
     }
 }
 
-export default connect(mapStateToProps)(Counter)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onIncrement: () => dispatch({type: 'INCREMENT'}),
+        onDecrement: () => dispatch({type: 'DECREMENT'}),
+        onAdd: () => dispatch({type: 'ADD', value: 2}),
+        onMin: () => dispatch({type: 'MIN', value: 2}),
+        showResult: (value) => dispatch({type: 'SHOW', value:value})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter)
